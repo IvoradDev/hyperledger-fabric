@@ -1,0 +1,174 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
+version: '2.1'
+networks:
+  test:
+    name: fabric_test
+
+services:
+  # ---- Org1 CouchDBs ----
+  couchdb01:
+    extends:
+      file: common-all.yaml
+      service: common-couch
+    container_name: couchdb01
+    ports:
+      - "7984:5984"
+    networks:
+      - test
+
+  peer0.org1.example.com:
+    environment:
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb01:5984
+    depends_on:
+      - couchdb01
+    networks:
+      - test
+
+  couchdb11:
+    extends:
+      file: common-all.yaml
+      service: common-couch
+    container_name: couchdb11
+    ports:
+      - "7985:5984"
+    networks:
+      - test
+
+  peer1.org1.example.com:
+    environment:
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb11:5984
+    depends_on:
+      - couchdb11
+    networks:
+      - test
+
+  couchdb21:
+    extends:
+      file: common-all.yaml
+      service: common-couch
+    container_name: couchdb21
+    ports:
+      - "7986:5984"
+    networks:
+      - test
+
+  peer2.org1.example.com:
+    environment:
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb21:5984
+    depends_on:
+      - couchdb21
+    networks:
+      - test
+
+  # ---- Org2 CouchDBs ----
+  couchdb02:
+    extends:
+      file: common-all.yaml
+      service: common-couch
+    container_name: couchdb02
+    ports:
+      - "8984:5984"
+    networks:
+      - test
+
+  peer0.org2.example.com:
+    environment:
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb02:5984
+    depends_on:
+      - couchdb02
+    networks:
+      - test
+
+  couchdb12:
+    extends:
+      file: common-all.yaml
+      service: common-couch
+    container_name: couchdb12
+    ports:
+      - "8985:5984"
+    networks:
+      - test
+
+  peer1.org2.example.com:
+    environment:
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb12:5984
+    depends_on:
+      - couchdb12
+    networks:
+      - test
+
+  couchdb22:
+    extends:
+      file: common-all.yaml
+      service: common-couch
+    container_name: couchdb22
+    ports:
+      - "8986:5984"
+    networks:
+      - test
+
+  peer2.org2.example.com:
+    environment:
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb22:5984
+    depends_on:
+      - couchdb22
+    networks:
+      - test
+
+  # ---- Org3 CouchDBs ----
+  couchdb03:
+    extends:
+      file: common-all.yaml
+      service: common-couch
+    container_name: couchdb03
+    ports:
+      - "9984:5984"
+    networks:
+      - test
+
+  peer0.org3.example.com:
+    environment:
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb03:5984
+    depends_on:
+      - couchdb03
+    networks:
+      - test
+
+  couchdb13:
+    extends:
+      file: common-all.yaml
+      service: common-couch
+    container_name: couchdb13
+    ports:
+      - "9985:5984"
+    networks:
+      - test
+
+  peer1.org3.example.com:
+    environment:
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb13:5984
+    depends_on:
+      - couchdb13
+    networks:
+      - test
+
+  couchdb23:
+    extends:
+      file: common-all.yaml
+      service: common-couch
+    container_name: couchdb23
+    ports:
+      - "9986:5984"
+    networks:
+      - test
+
+  peer2.org3.example.com:
+    environment:
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb23:5984
+    depends_on:
+      - couchdb23
+    networks:
+      - test
