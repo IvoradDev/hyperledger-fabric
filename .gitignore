@@ -1,0 +1,29 @@
+# Fabric binaries and config (downloaded by install-fabric.sh)
+bin/
+config/
+
+# Generated crypto material and channel artifacts (created at runtime by network.sh)
+network/organizations/peerOrganizations/
+network/organizations/ordererOrganizations/
+network/system-genesis-block/
+network/channel-artifacts/
+
+# Chaincode vendor directory (created by go mod vendor during deployCC)
+network/chaincode/trading-go/vendor/
+
+# Fabric CA runtime files
+network/organizations/fabric-ca/org1/msp/
+network/organizations/fabric-ca/org1/tls-cert.pem
+network/organizations/fabric-ca/org2/msp/
+network/organizations/fabric-ca/org2/tls-cert.pem
+network/organizations/fabric-ca/org3/msp/
+network/organizations/fabric-ca/org3/tls-cert.pem
+network/organizations/fabric-ca/ordererOrg/msp/
+network/organizations/fabric-ca/ordererOrg/tls-cert.pem
+
+# Logs
+network/log.txt
+
+# Node.js
+node-api/node_modules/
+node-api/wallet/
