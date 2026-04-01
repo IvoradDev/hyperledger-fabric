@@ -11,15 +11,14 @@ network/channel-artifacts/
 # Chaincode vendor directory (created by go mod vendor during deployCC)
 network/chaincode/trading-go/vendor/
 
-# Fabric CA runtime files
-network/organizations/fabric-ca/org1/msp/
-network/organizations/fabric-ca/org1/tls-cert.pem
-network/organizations/fabric-ca/org2/msp/
-network/organizations/fabric-ca/org2/tls-cert.pem
-network/organizations/fabric-ca/org3/msp/
-network/organizations/fabric-ca/org3/tls-cert.pem
-network/organizations/fabric-ca/ordererOrg/msp/
-network/organizations/fabric-ca/ordererOrg/tls-cert.pem
+# Fabric CA runtime files (fully generated at network startup)
+network/organizations/fabric-ca/org1/
+network/organizations/fabric-ca/org2/
+network/organizations/fabric-ca/org3/
+network/organizations/fabric-ca/ordererOrg/
+
+# Chaincode build artifacts
+network/trading.tar.gz
 
 # Logs
 network/log.txt

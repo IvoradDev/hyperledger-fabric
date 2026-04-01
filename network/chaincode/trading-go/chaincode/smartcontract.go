@@ -27,17 +27,17 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 	merchants := []Merchant{
 		{
 			ID: "M1", MerchantTypeID: "MT1", PIB: "111111111",
-			Balance: 5000.00, ProductIDs: []string{}, ReceiptIDs: []string{},
+			Balance: 5000.00, ProductIDs: []string{"P1", "P2"}, ReceiptIDs: []string{},
 			DocType: "merchant",
 		},
 		{
 			ID: "M2", MerchantTypeID: "MT2", PIB: "222222222",
-			Balance: 8000.00, ProductIDs: []string{}, ReceiptIDs: []string{},
+			Balance: 8000.00, ProductIDs: []string{"P3", "P4"}, ReceiptIDs: []string{},
 			DocType: "merchant",
 		},
 		{
 			ID: "M3", MerchantTypeID: "MT3", PIB: "333333333",
-			Balance: 3000.00, ProductIDs: []string{}, ReceiptIDs: []string{},
+			Balance: 3000.00, ProductIDs: []string{"P5", "P6"}, ReceiptIDs: []string{},
 			DocType: "merchant",
 		},
 	}
@@ -57,9 +57,6 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 	}
 	for _, p := range products {
 		if err := putState(ctx, productKey(p.ID), p); err != nil {
-			return err
-		}
-		if err := addProductToMerchant(ctx, p.MerchantID, p.ID); err != nil {
 			return err
 		}
 	}

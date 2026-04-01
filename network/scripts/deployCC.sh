@@ -102,6 +102,9 @@ installChaincode() {
     res=$?
     { set +x; } 2>/dev/null
     cat log.txt
+    if [ $res -ne 0 ]; then
+      grep -q "already successfully installed" log.txt && res=0
+    fi
     verifyResult $res "Chaincode installation on peer${j}.org${ORG} has failed"
     successln "Chaincode installed on peer${j}.org${ORG}"
   done

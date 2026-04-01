@@ -13,7 +13,7 @@ export PATH=${PWD}/../bin:$PATH
 export FABRIC_CFG_PATH=${PWD}/configtx
 export VERBOSE=false
 
-export CONFIG_PATH=${PWD}/config
+export CONFIG_PATH=${PWD}/../config
 export ORGANIZATION_NUMBER=3
 export PEER_NUMBER=3
 
