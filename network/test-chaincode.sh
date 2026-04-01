@@ -1,6 +1,6 @@
 #!/bin/bash
 export PATH=${PWD}/../bin:$PATH
-export FABRIC_CFG_PATH=${PWD}/config
+export FABRIC_CFG_PATH=${PWD}/../config
 export CORE_PEER_TLS_ENABLED=true
 export ORDERER_CA=${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 
@@ -12,6 +12,8 @@ C_YELLOW='\033[1;33m'
 
 PASS=0
 FAIL=0
+
+RUN=$(date +%s)
 
 function setOrg() {
   local ORG=$1
@@ -137,47 +139,47 @@ runInvoke "InitLedger on channel2" channel2 InitLedger
 # --- Merchant Types ---
 runQuery  "GetAllMerchantTypes" channel1 GetAllMerchantTypes
 runQuery  "GetMerchantType MT1" channel1 GetMerchantType MT1
-runInvoke "CreateMerchantType MT4" channel1 CreateMerchantType MT4 Pharmacy "Sells medicine and health products"
-runQuery  "GetMerchantType MT4 (newly created)" channel1 GetMerchantType MT4
+runInvoke "CreateMerchantType TMT1-$RUN" channel1 CreateMerchantType TMT1-$RUN Pharmacy "Sells medicine and health products"
+runQuery  "GetMerchantType TMT1-$RUN (newly created)" channel1 GetMerchantType TMT1-$RUN
 
 # --- Merchants ---
 runQuery  "GetAllMerchants" channel1 GetAllMerchants
 runQuery  "GetMerchant M1" channel1 GetMerchant M1
-runInvoke "CreateMerchant M4" channel1 CreateMerchant M4 MT4 444444444 2000
-runQuery  "GetMerchant M4 (newly created)" channel1 GetMerchant M4
+runInvoke "CreateMerchant TM1-$RUN" channel1 CreateMerchant TM1-$RUN TMT1-$RUN 444444444 2000
+runQuery  "GetMerchant TM1-$RUN (newly created)" channel1 GetMerchant TM1-$RUN
 runInvoke "DepositToMerchant M1" channel1 DepositToMerchant M1 500
 runQuery  "GetMerchant M1 (balance increased)" channel1 GetMerchant M1
 
 # --- Products ---
 runQuery  "GetAllProducts" channel1 GetAllProducts
 runQuery  "GetProduct P1" channel1 GetProduct P1
-runInvoke "CreateProduct P7 for M4" channel1 CreateProduct P7 M4 Aspirin 2027-12-01 3.50 100
-runQuery  "GetProduct P7 (newly created)" channel1 GetProduct P7
+runInvoke "CreateProduct TP1-$RUN for TM1-$RUN" channel1 CreateProduct TP1-$RUN TM1-$RUN Aspirin 2027-12-01 3.50 100
+runQuery  "GetProduct TP1-$RUN (newly created)" channel1 GetProduct TP1-$RUN
 
 # --- Users ---
 runQuery  "GetAllUsers" channel1 GetAllUsers
 runQuery  "GetUser U1" channel1 GetUser U1
-runInvoke "CreateUser U5" channel1 CreateUser U5 Stefan Stefanovic stefan@example.com 800
-runQuery  "GetUser U5 (newly created)" channel1 GetUser U5
+runInvoke "CreateUser TU1-$RUN" channel1 CreateUser TU1-$RUN Stefan Stefanovic stefan@example.com 800
+runQuery  "GetUser TU1-$RUN (newly created)" channel1 GetUser TU1-$RUN
 runInvoke "DepositToUser U3" channel1 DepositToUser U3 300
 runQuery  "GetUser U3 (balance increased)" channel1 GetUser U3
 
 # --- Purchase ---
-runInvoke "PurchaseProduct - U2 buys Laptop from M2" channel1 PurchaseProduct R1 U2 M2 P3
-runQuery  "GetReceipt R1" channel1 GetReceipt R1
+runInvoke "PurchaseProduct - U2 buys Laptop from M2" channel1 PurchaseProduct TR1-$RUN U2 M2 P3
+runQuery  "GetReceipt TR1-$RUN" channel1 GetReceipt TR1-$RUN
 runQuery  "GetUser U2 (balance decreased)" channel1 GetUser U2
 runQuery  "GetMerchant M2 (balance increased)" channel1 GetMerchant M2
 runQuery  "GetUserReceipts U2" channel1 GetUserReceipts U2
 runQuery  "GetMerchantReceipts M2" channel1 GetMerchantReceipts M2
 
-runInvoke "PurchaseProduct - U1 buys Milk from M1" channel1 PurchaseProduct R2 U1 M1 P1
-runInvoke "PurchaseProduct - U4 buys Engine Oil from M3" channel1 PurchaseProduct R3 U4 M3 P6
+runInvoke "PurchaseProduct - U1 buys Milk from M1" channel1 PurchaseProduct TR2-$RUN U1 M1 P1
+runInvoke "PurchaseProduct - U4 buys Engine Oil from M3" channel1 PurchaseProduct TR3-$RUN U4 M3 P6
 
 # --- Channel 2 (same chaincode, separate ledger) ---
 setOrg 2
 runQuery  "GetAllMerchants on channel2 (via org2)" channel2 GetAllMerchants
-runInvoke "PurchaseProduct on channel2 - U1 buys USB Cable" channel2 PurchaseProduct R4 U1 M2 P4
-runQuery  "GetReceipt R4 on channel2" channel2 GetReceipt R4
+runInvoke "PurchaseProduct on channel2 - U1 buys USB Cable" channel2 PurchaseProduct TR4-$RUN U1 M2 P4
+runQuery  "GetReceipt TR4-$RUN on channel2" channel2 GetReceipt TR4-$RUN
 setOrg 1
 
 # --- Rich Queries (CouchDB) ---
@@ -193,11 +195,11 @@ runQuery  "SearchUsersBySurname 'ic'" channel1 SearchUsersBySurname ic
 runQuery  "GetUsersWithBalanceAbove 300" channel1 GetUsersWithBalanceAbove 300
 
 # --- Error cases ---
-runExpectFail "PurchaseProduct - user does not exist" channel1 PurchaseProduct R99 U99 M1 P1
-runExpectFail "PurchaseProduct - product does not exist" channel1 PurchaseProduct R99 U1 M1 P99
-runExpectFail "PurchaseProduct - merchant does not exist" channel1 PurchaseProduct R99 U1 M99 P1
-runExpectFail "PurchaseProduct - insufficient balance (U3 has ~200, Laptop costs 999.99)" channel1 PurchaseProduct R99 U3 M2 P3
-runExpectFail "PurchaseProduct - duplicate receipt ID" channel1 PurchaseProduct R1 U1 M1 P1
+runExpectFail "PurchaseProduct - user does not exist" channel1 PurchaseProduct TR99-$RUN U99 M1 P1
+runExpectFail "PurchaseProduct - product does not exist" channel1 PurchaseProduct TR99-$RUN U1 M1 P99
+runExpectFail "PurchaseProduct - merchant does not exist" channel1 PurchaseProduct TR99-$RUN U1 M99 P1
+runExpectFail "PurchaseProduct - insufficient balance (U3 has ~200, Laptop costs 999.99)" channel1 PurchaseProduct TR99-$RUN U3 M2 P3
+runExpectFail "PurchaseProduct - duplicate receipt ID" channel1 PurchaseProduct TR1-$RUN U1 M1 P1
 runExpectFail "CreateMerchant - duplicate ID" channel1 CreateMerchant M1 MT1 111111111 0
 runExpectFail "CreateUser - duplicate ID" channel1 CreateUser U1 Marko Markovic marko@example.com 0
 runExpectFail "DepositToMerchant - negative amount" channel1 DepositToMerchant M1 -100

@@ -1,6 +1,6 @@
 #!/bin/bash
 export PATH=${PWD}/../bin:$PATH
-export FABRIC_CFG_PATH=${PWD}/config
+export FABRIC_CFG_PATH=${PWD}/../config
 export CORE_PEER_TLS_ENABLED=true
 export ORDERER_CA=${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 
